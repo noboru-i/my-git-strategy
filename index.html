@@ -3,6 +3,21 @@
 
 <head>
   <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
+  <script>
+    const withoutHash = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro, {
+      "commit": {
+        "message": {
+          "displayHash": false,
+          "displayAuthor": false,
+        },
+      },
+    });
+    const graphOption = {
+      // "mode": "compact",
+      "orientation": "vertical-reverse",
+      "template": withoutHash,
+    };
+  </script>
 </head>
 
 <body>
@@ -10,21 +25,17 @@
   <script>
     (function () {
       const graphContainer = document.getElementById("graph-feature");
-      const options = {
-        "mode": "compact",
-        "orientation": "horizontal",
-      };
-      const gitgraph = GitgraphJS.createGitgraph(graphContainer, options);
+      const gitgraph = GitgraphJS.createGitgraph(graphContainer, graphOption);
 
       const develop = gitgraph.branch("develop");
-      develop.commit();
+      develop.commit("");
 
       const aFeature = gitgraph.branch("feature/XXX");
       aFeature
-        .commit()
-        .commit();
+        .commit("")
+        .commit("");
 
-      develop.merge(aFeature);
+      develop.merge(aFeature, "Finish feature");
     })();
   </script>
 
@@ -32,24 +43,44 @@
   <script>
     (function () {
       const graphContainer = document.getElementById("graph-feature-complex");
-      const options = {
-        "mode": "compact",
-        "orientation": "horizontal",
-      };
-      const gitgraph = GitgraphJS.createGitgraph(graphContainer, options);
+      const gitgraph = GitgraphJS.createGitgraph(graphContainer, graphOption);
 
       const develop = gitgraph.branch("develop");
-      develop.commit();
+      develop.commit("");
 
       const aFeature = gitgraph.branch("feature/XXX");
-      aFeature
-        .commit();
+      aFeature.commit("");
       const aaFeature = gitgraph.branch("feature/XXX-YYY");
-      aaFeature
-        .commit();
-      aFeature.merge(aaFeature);
+      const abFeature = gitgraph.branch("feature/XXX-ZZZ");
+      aaFeature.commit("");
+      abFeature.commit("").commit("");
+      aFeature.merge(aaFeature, "Finish YYY");
+      aFeature.merge(abFeature, "Finish ZZZ");
 
-      develop.merge(aFeature);
+      develop.merge(aFeature, "Finish feature");
+    })();
+  </script>
+
+  <div id="graph-release"></div>
+  <script>
+    (function () {
+      const graphContainer = document.getElementById("graph-release");
+      const gitgraph = GitgraphJS.createGitgraph(graphContainer, graphOption);
+
+      const master = gitgraph.branch("master");
+      master.commit("");
+
+      const develop = gitgraph.branch("develop");
+      develop.commit("");
+
+      const release = gitgraph.branch("release/vX.X.X");
+      release.commit("");
+      const aFeature = gitgraph.branch("feature/XXX");
+      aFeature.commit("");
+      release.merge(aFeature, "Finish hotfix");
+
+      develop.merge(release, "Finish release");
+      master.merge(release, "Also merge to master");
     })();
   </script>
 
