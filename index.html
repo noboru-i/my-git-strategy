@@ -2,40 +2,57 @@
 <html>
 
 <head>
-  <!-- Load the JS file -->
   <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
 </head>
 
 <body>
-  <!-- DOM element in which we'll mount our graph -->
-  <div id="graph-container"></div>
-
-  <!-- Use the `GitgraphJS` global variable to create your graph -->
+  <div id="graph-feature"></div>
   <script>
-    // Get the graph container HTML element.
-    const graphContainer = document.getElementById("graph-container");
+    (function () {
+      const graphContainer = document.getElementById("graph-feature");
+      const options = {
+        "mode": "compact",
+        "orientation": "horizontal",
+      };
+      const gitgraph = GitgraphJS.createGitgraph(graphContainer, options);
 
-    // Instantiate the graph.
-    const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+      const develop = gitgraph.branch("develop");
+      develop.commit();
 
-    // Simulate git commands with Gitgraph API.
-    const master = gitgraph.branch("master");
-    master.commit("Initial commit");
+      const aFeature = gitgraph.branch("feature/XXX");
+      aFeature
+        .commit()
+        .commit();
 
-    const develop = gitgraph.branch("develop");
-    develop.commit("Add TypeScript");
-
-    const aFeature = gitgraph.branch("a-feature");
-    aFeature
-      .commit("Make it work")
-      .commit("Make it right")
-      .commit("Make it fast");
-
-    develop.merge(aFeature);
-    develop.commit("Prepare v1");
-
-    master.merge(develop).tag("v1.0.0");
+      develop.merge(aFeature);
+    })();
   </script>
+
+  <div id="graph-feature-complex"></div>
+  <script>
+    (function () {
+      const graphContainer = document.getElementById("graph-feature-complex");
+      const options = {
+        "mode": "compact",
+        "orientation": "horizontal",
+      };
+      const gitgraph = GitgraphJS.createGitgraph(graphContainer, options);
+
+      const develop = gitgraph.branch("develop");
+      develop.commit();
+
+      const aFeature = gitgraph.branch("feature/XXX");
+      aFeature
+        .commit();
+      const aaFeature = gitgraph.branch("feature/XXX-YYY");
+      aaFeature
+        .commit();
+      aFeature.merge(aaFeature);
+
+      develop.merge(aFeature);
+    })();
+  </script>
+
 </body>
 
 </html>
